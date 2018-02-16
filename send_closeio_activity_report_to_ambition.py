@@ -5,6 +5,8 @@
 import json
 import datetime
 import sys
+import time
+from dateutil import tz
 
 # Close.io
 from _closeio import generate_user_activity_report
@@ -26,6 +28,8 @@ from demo_search_queries import demos_rescheduled_query
 from demo_search_queries import demos_held_query
 from demo_search_queries import demos_conducted_query
 
+tz_off = (-time.timezone/60/60)
+
 
 # Set up the amount of days in the past, set up report
 day_list = []
@@ -35,8 +39,8 @@ TODAY = datetime.datetime.now()
 count = 0
 
 while count <= PAST_DAYS:
-	d = TODAY + datetime.timedelta(-count)
-	day_list.append(str(d)[0:10])
+	d = datetime.datetime(TODAY.year, TODAY.month, TODAY.day, tzinfo=tz.tzutc()) - datetime.timedelta(days=count) - datetime.timedelta(hours=tz_off)
+	day_list.append(d)
 	count += 1
 
 
@@ -59,6 +63,9 @@ for user in closeio_users:
 
 # Iterate through each day, retrieving all the Activity data for each user
 for day in day_list:
+	start = day.strftime("%Y-%m-%dT%H:%M:%S")
+	end = (day + datetime.timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%S")
+	day = str(start).split('T')[0]
 
 	for user in user_list:
 
@@ -71,8 +78,8 @@ for day in day_list:
 		user_activity_report = generate_user_activity_report(
 			api_key=api_key,
 			org_id=org_id,
-			date_start="{}T00:00:00+00".format(day),
-			date_end='{}T23:59:59.999'.format(day),
+			date_start=start,
+			date_end=end,
 			user_id=user['user_id']
 		)
 
