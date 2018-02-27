@@ -35,6 +35,7 @@ tz_off = (-time.timezone/60/60)
 day_list = []
 PAST_DAYS = int(sys.argv[1])
 TODAY = datetime.datetime.now()
+day_real = str(TODAY).split(' ')[0]
 
 count = 0
 
@@ -127,7 +128,7 @@ for day in day_list:
 		# Add the user's Activity Report data to the report going to Ambition
 		ambition_report.append({
 			"email": user['email'],
-			"date": day,
+			"date": day_real,
 			"calls": user_activity_report['calls'],
 			"leads_contacted": user_activity_report['leads_contacted'],
 			"emails_sent": user_activity_report['emails_sent'],
