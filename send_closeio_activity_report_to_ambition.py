@@ -35,7 +35,7 @@ tz_off = (-time.timezone/60/60)
 day_list = []
 PAST_DAYS = int(sys.argv[1])
 TODAY = datetime.datetime.now()
-day_real = str(TODAY).split(' ')[0]
+
 
 count = 0
 
@@ -65,8 +65,10 @@ for user in closeio_users:
 # Iterate through each day, retrieving all the Activity data for each user
 for day in day_list:
 	start = day.strftime("%Y-%m-%dT%H:%M:%S")
+	day_real = day + datetime.timedelta(hours=tz_off)
 	end = (day + datetime.timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%S")
 	day = str(start).split('T')[0]
+	day_real = str(day_real).split(' ')[0]
 
 	for user in user_list:
 
